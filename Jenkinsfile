@@ -18,7 +18,7 @@ pipeline {
             steps {
                 echo 'Deploying application...'
                 // Copy files to the deployment directory
-                sh '''
+                sh '/usr/local/bin/npm'
                 scp -r ./* ubuntu@ip-172-31-34-17:/home/ubuntu/my-node-app
                 '''
             }
