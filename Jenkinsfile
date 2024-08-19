@@ -17,9 +17,14 @@ pipeline {
         stage('Deploy') {
             steps {
                 echo 'Deploying application...'
-                sh '''
-                scp -r ./* ubuntu@ip-172-31-34-17:/home/ubuntu/my-node-app
-                '''
+                // Start the application using pm2
+                sh 'pm2 start app.js --name "my-node-app"'
+            }
+        }
+        stage('Verify Application') {
+            steps {
+                echo 'Verifying application...'
+                sh 'curl http://3.109.182.109:3000'  // Adjust if necessary
             }
         }
     }
