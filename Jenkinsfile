@@ -17,14 +17,20 @@ pipeline {
         stage('Deploy') {
             steps {
                 echo 'Deploying application...'
-                // Start the application using pm2
-                sh 'pm2 start app.js --name "my-node-app"'
+                // Copy the application files to the target server
+                sshagent(['ec2-key']) {
+                    sh """
+                       scp -r ./* ubuntu@3.109.182.109:/home/ubuntu/my-node-app
+                       ssh ubuntu@3.109.182.109 'cd /home/ubuntu/my-node-app && node app.js &'
+                    """
+                }
             }
         }
         stage('Verify Application') {
             steps {
                 echo 'Verifying application...'
-                sh 'curl http://3.109.182.109:3000'  // Adjust if necessary
+                // Verify the application by sending a request to the target server
+                sh 'curl http://3.109.182.109:3000'
             }
         }
     }
