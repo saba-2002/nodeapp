@@ -23,13 +23,17 @@ phases:
       - echo Pushing the Docker image to ECR...
       - docker push 559050219152.dkr.ecr.us-east-1.amazonaws.com/nodeapp:latest || exit 1
   post_build:
-    commands:
-      - echo Setting up Kubernetes config...
-      - aws eks update-kubeconfig --name test-cluster-saba --region us-east-1 || exit 1
-      - kubectl config current-context  # Check current context
-      - kubectl config view  # View kubeconfig for debugging
-      - echo Deploying to EKS...
-      - kubectl set image deployment/nodeapp nodeapp=559050219152.dkr.ecr.us-east-1.amazonaws.com/nodeapp:latest || exit 1
+  commands:
+    - echo Setting up Kubernetes config...
+    - aws eks update-kubeconfig --name test-cluster-saba --region us-east-1 || exit 1
+    - echo "Current context:"
+    - kubectl config current-context
+    - echo "Kubeconfig content:"
+    - kubectl config view
+    - echo "Testing access to EKS..."
+    - kubectl get nodes || exit 1
+    - echo Deploying to EKS...
+    - kubectl set image deployment/nodeapp nodeapp=559050219152.dkr.ecr.us-east-1.amazonaws.com/nodeapp:latest || exit 1
 
 artifacts:
   files:
