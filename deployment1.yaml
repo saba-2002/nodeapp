@@ -1,19 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: node-app
+  name: nodeapp
+  labels:
+    app: nodeapp
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
-      app: node-app
+      app: nodeapp
   template:
     metadata:
       labels:
-        app: node-app
+        app: nodeapp
     spec:
       containers:
-      - name: node-app
+      - name: nodeapp
         image: 559050219152.dkr.ecr.us-east-1.amazonaws.com/nodeapp:latest
         ports:
-        - containerPort: 3000
+        - containerPort: 3000 # Adjust to your app's port
