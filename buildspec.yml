@@ -1,12 +1,6 @@
 version: 0.2
 
 phases:
-  install:
-    runtime-versions:
-      nodejs: 14
-    commands:
-      - echo Installing source NPM dependencies...
-      - npm install
   pre_build:
     commands:
       - echo Logging in to Amazon ECR...
@@ -15,7 +9,7 @@ phases:
     commands:
       - echo Building the Docker image...
       - docker build -t nodeapp .
-      - docker tag nodeapp:latest 559050219152.dkr.ecr.us-east-1.amazonaws.com/nodeapplatest
+      - docker tag nodeapp:latest 559050219152.dkr.ecr.us-east-1.amazonaws.com/nodeapp:latest
   post_build:
     commands:
       - echo Pushing the Docker image...
