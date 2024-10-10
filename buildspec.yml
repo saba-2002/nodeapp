@@ -4,11 +4,6 @@ phases:
   install:
     runtime-versions:
       nodejs: 18  # Consider updating to a newer version
-    commands:
-      - echo Installing kubectl...
-      - curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
-      - chmod +x ./kubectl
-      - mv ./kubectl /usr/local/bin/kubectl
   pre_build:
     commands:
       - echo Logging in to Amazon ECR...
@@ -23,18 +18,17 @@ phases:
       - echo Pushing the Docker image to ECR...
       - docker push 559050219152.dkr.ecr.us-east-1.amazonaws.com/nodeapp:latest || exit 1
   post_build:
-  commands:
-    - echo Setting up Kubernetes config...
-    - aws eks update-kubeconfig --name test-cluster-saba --region us-east-1 || exit 1
-    - echo "Current context:"
-    - kubectl config current-context
-    - echo "Kubeconfig content:"
-    - kubectl config view
-    - echo "Testing access to EKS..."
-    - kubectl get nodes || exit 1
-    - echo Deploying to EKS...
-    - kubectl set image deployment/nodeapp nodeapp=559050219152.dkr.ecr.us-east-1.amazonaws.com/nodeapp:latest || exit 1
-
+    commands:
+      - echo Setting up Kubernetes config...
+      - aws eks update-kubeconfig --name test-cluster-saba --region us-east-1 || exit 1
+      - echo "Current context:"
+      - kubectl config current-context
+      - echo "Kubeconfig content:"
+      - kubectl config view
+      - echo "Testing access to EKS..."
+      - kubectl get nodes || exit 1
+      - echo Deploying to EKS...
+      - kubectl set image deployment/nodeapp nodeapp=559050219152.dkr.ecr.us-east-1.amazonaws.com/nodeapp:latest || exit 1
 artifacts:
   files:
     - deployment1.yaml
