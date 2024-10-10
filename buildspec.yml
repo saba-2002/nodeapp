@@ -3,26 +3,27 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      nodejs: 14
+      nodejs: 18  # Consider updating to a newer version
   pre_build:
     commands:
       - echo Logging in to Amazon ECR...
       - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 559050219152.dkr.ecr.us-east-1.amazonaws.com
       - echo Logging in to Docker Hub...
-      - echo "$DOCKER_HUB_PASSWORD" | docker login --username "$DOCKER_HUB_USERNAME" --password-stdin
+      - echo "$DOCKER_HUB_PASSWORD" | docker login --username "$DOCKER_HUB_USERNAME" --password-stdin || exit 1
   build:
     commands:
       - echo Building the Docker image...
-      - docker build -t nodeapp .
+      - docker build -t nodeapp . || exit 1
       - docker tag nodeapp:latest 559050219152.dkr.ecr.us-east-1.amazonaws.com/nodeapp:latest
       - echo Pushing the Docker image to ECR...
-      - docker push 559050219152.dkr.ecr.us-east-1.amazonaws.com/nodeapp:latest
+      - docker push 559050219152.dkr.ecr.us-east-1.amazonaws.com/nodeapp:latest || exit 1
   post_build:
     commands:
       - echo Setting up Kubernetes config...
-      - aws eks update-kubeconfig --name test-cluster-saba --region us-east-1
+      - aws eks update-kubeconfig --name test-cluster-saba --region us-east-1 || exit 1
+      - kubectl config current-context  # Verify current context
       - echo Deploying to EKS...
-      - kubectl set image deployment/nodeapp nodeapp=559050219152.dkr.ecr.us-east-1.amazonaws.com/nodeapp:latest
+      - kubectl set image deployment/nodeapp nodeapp=559050219152.dkr.ecr.us-east-1.amazonaws.com/nodeapp:latest || exit 1
 
 artifacts:
   files:
