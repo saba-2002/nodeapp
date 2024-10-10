@@ -15,9 +15,11 @@ phases:
       - docker tag nodeapp:latest 559050219152.dkr.ecr.us-east-1.amazonaws.com/nodeapp:latest
       - docker push 559050219152.dkr.ecr.us-east-1.amazonaws.com/nodeapp:latest
   post_build:
-    commands:
-      - echo Deploying to EKS...
-      - kubectl set image deployment/nodeapp nodeapp=559050219152.dkr.ecr.us-east-1.amazonaws.com/nodeapp:latest
+  commands:
+    - echo Setting up Kubernetes config...
+    - aws eks update-kubeconfig --name your-cluster-name --region us-east-1
+    - echo Deploying to EKS...
+    - kubectl set image deployment/nodeapp nodeapp=559050219152.dkr.ecr.us-east-1.amazonaws.com/nodeapp:latest
 
 artifacts:
   files:
