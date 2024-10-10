@@ -14,14 +14,14 @@ phases:
   build:
     commands:
       - echo Building the Docker image...
-      - docker build -t your-nodeapp .
-      - docker tag your-nodeapp:latest 559050219152.dkr.ecr.us-east-1.amazonaws.com/nodeapplatest
+      - docker build -t nodeapp .
+      - docker tag nodeapp:latest 559050219152.dkr.ecr.us-east-1.amazonaws.com/nodeapplatest
   post_build:
     commands:
       - echo Pushing the Docker image...
       - docker push 559050219152.dkr.ecr.us-east-1.amazonaws.com/nodeapp:latest
       - echo Writing image definitions...
-      - printf '[{"name":"your-node-app","imageUri":"%s"}]' 559050219152.dkr.ecr.us-east-1.amazonaws.com/nodeapp:latest > imagedefinitions.json
+      - printf '[{"name":"nodeapp","imageUri":"%s"}]' 559050219152.dkr.ecr.us-east-1.amazonaws.com/nodeapp:latest > imagedefinitions.json
 artifacts:
   files:
     - imagedefinitions.json
