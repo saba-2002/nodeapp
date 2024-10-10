@@ -8,6 +8,8 @@ phases:
     commands:
       - echo Logging in to Amazon ECR...
       - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 559050219152.dkr.ecr.us-east-1.amazonaws.com
+      - echo Logging in to Docker Hub...
+      - echo "1510sabakhan" | docker login --username "saba2002" --password-stdin
   build:
     commands:
       - echo Building the Docker image...
@@ -18,10 +20,11 @@ phases:
   post_build:
     commands:
       - echo Setting up Kubernetes config...
-      - aws eks update-kubeconfig --name your-cluster-name --region us-east-1
+      - aws eks update-kubeconfig --name actual-cluster-name --region us-east-1
       - echo Deploying to EKS...
       - kubectl set image deployment/nodeapp nodeapp=559050219152.dkr.ecr.us-east-1.amazonaws.com/nodeapp:latest
 
 artifacts:
   files:
     - deployment1.yaml
+
